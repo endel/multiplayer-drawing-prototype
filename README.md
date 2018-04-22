@@ -2,7 +2,7 @@
 
 Multiplayer Drawing Prototype using Construct3 and Colyseus.
 
-- [View live](https://drawing-prototype.herokuapp.com/)
+**[View live](https://drawing-prototype.herokuapp.com/)**
 
 Consider backing Colyseus development and its support on Patreon.
 
