@@ -1,6 +1,8 @@
-# Multiplayer Drawing Prototype (Construct 3)
+# Multiplayer Drawing Prototype (Construct 3 + Colyseus)
 
-This demo uses Colyseus Construct 3
+Multiplayer Drawing Prototype using Construct3 and Colyseus.
+
+- [View live](https://drawing-prototype.herokuapp.com/)
 
 ## License
 
