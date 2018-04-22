@@ -22829,14 +22829,14 @@ cr.plugins_.Colyseus = function(runtime)
      this.endpoint = this.properties[0];
    };
 
-   instanceProto.onDestroy = function()
-   {
-     // leave the room
-     if (this.room) { this.room.leave(); }
-
-     // close the connection with server.
-     if (client) { client.close(); }
-   };
+   // instanceProto.onDestroy = function()
+   // {
+   //   // leave the room
+   //   if (this.room) { this.room.leave(); }
+   //
+   //   // close the connection with server.
+   //   if (client) { client.close(); }
+   // };
 
    instanceProto.saveToJSON = function ()
    {
@@ -22869,9 +22869,12 @@ cr.plugins_.Colyseus = function(runtime)
    Cnds.prototype.OnMessage = function (type) {
      return (this.lastType === type);
    };
-   Cnds.prototype.OnRoomListen = function (path, operation) {
+
+   var operations = ['any', 'add', 'replace', 'remove'];
+   Cnds.prototype.OnRoomListen = function (path, operationIndex) {
      var self = this;
      var change = this.lastChange;
+     var operation = operations[operationIndex];
 
      // the operation doesn't match with the operation user is interested in.
      if (operation !== "any" && change.operation !== operation) {
@@ -22884,7 +22887,7 @@ cr.plugins_.Colyseus = function(runtime)
        rules = rules.map(function(segment) {
          // replace placeholder matchers
          return (segment.indexOf(":") === 0)
-           ? self.room.matcherPlaceholders[segment] || this.matcherPlaceholders[":*"]
+           ? self.room.matcherPlaceholders[segment] || self.room.matcherPlaceholders[":*"]
            : new RegExp("^" + segment + "$");
        });
        this.listeners[path] = rules;
@@ -22997,7 +23000,7 @@ cr.plugins_.Colyseus = function(runtime)
 
    Exps.prototype.State = function (ret, variablePath)
    {
-     ret.set_any(getDeepVariable(variablePath, this.room.data));
+     ret.set_any(getDeepVariable(variablePath, this.room.state));
    };
 
    Exps.prototype.Path = function (ret, variable) {
@@ -23021,9 +23024,14 @@ cr.plugins_.Colyseus = function(runtime)
      var value = container;
 
      // deeply get the requested variable from the room's state.
-     do {
-       value = value[path.shift()];
-     } while (path.length > 0);
+     try {
+       do {
+         value = value[path.shift()];
+       } while (path.length > 0);
+     } catch (e) {
+       console.warn(e);
+       return null;
+     }
 
      return value;
    }
